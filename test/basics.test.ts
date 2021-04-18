@@ -7,6 +7,7 @@ test('can translate', t => {
   i18n.loadLocale('en', {
     greeting: 'Hello!'
   })
+  console.log(i18n.t('en', 'greeting'))
   t.is(i18n.t('en', 'greeting'), 'Hello!')
 })
 

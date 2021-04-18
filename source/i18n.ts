@@ -2,18 +2,16 @@ import {Context as grammyContext, MiddlewareFn} from 'https://deno.land/x/grammy
 export * from 'https://cdn.skypack.dev/@grammyjs/types@v2.0.2?dts'
 import {Message} from 'https://cdn.skypack.dev/@grammyjs/types@v2.0.2?dts'
 import { YamlLoader } from "https://deno.land/x/yaml_loader/mod.ts";
-
 import {Config, LanguageCode, Repository, RepositoryEntry, TemplateData} from './types.ts'
 import {I18nContext} from './context.ts'
 import {pluralize} from './pluralize.ts'
-import { createRequire } from "https://deno.land/std@0.93.0/node/module.ts";
 import tableize from './tabelize.ts'
 const yamlLoader = new YamlLoader();
-const require = createRequire(import.meta.url);
-const fs = require("fs");
-const path = require("path");
+import getFiles, { exists, fileExt, trimPath, fmtFileSize } from "https://deno.land/x/getfiles/mod.ts";
 
 
+
+  
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
@@ -45,19 +43,21 @@ export class I18n {
   }
 
   loadLocales(directory: string) {
-    if (!fs.existsSync(directory)) {
+    if (!exists(directory)) {
       throw new Error(`Locales directory '${directory}' not found`)
     }
 
-    const files = fs.readdirSync(directory)
-    for (const fileName of files) {
-      const extension = path.extname(fileName)
-      const languageCode = path.basename(fileName, extension).toLowerCase()
-      const fileContent = fs.readFileSync(path.resolve(directory, fileName), 'utf8')
+    const files = getFiles(directory)
+    const fileNames: string[] = [];
+  
+    for (const propertyName in files) {
+      const extension = files[propertyName]['ext']
+      const languageCode = files[propertyName]['name'].split('.').slice(0, -1).join('.');
+      const fileContent = Deno.readTextFileSync(directory + '/' + files[propertyName]['name'])
       let data
-      if (extension === '.yaml' || extension === '.yml') {
+      if (extension === 'yaml' || extension === 'yml') {
         data = yamlLoader.parseFile(fileContent)
-      } else if (extension === '.json') {
+      } else if (extension === 'json') {
         data = JSON.parse(fileContent)
       }
 
