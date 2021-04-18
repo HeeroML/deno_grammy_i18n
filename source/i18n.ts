@@ -1,5 +1,3 @@
-import * as path from "https://deno.land/std@0.93.0/path/mod.ts";
-
 import {Context as grammyContext, MiddlewareFn} from 'https://deno.land/x/grammy/mod.ts'
 export * from 'https://cdn.skypack.dev/@grammyjs/types@v2.0.2?dts'
 import {Message} from 'https://cdn.skypack.dev/@grammyjs/types@v2.0.2?dts'
@@ -13,6 +11,8 @@ import tableize from './tabelize.ts'
 const yamlLoader = new YamlLoader();
 const require = createRequire(import.meta.url);
 const fs = require("fs");
+const path = require("path");
+
 
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
