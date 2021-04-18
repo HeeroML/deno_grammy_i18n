@@ -5,8 +5,10 @@ import { YamlLoader } from "https://deno.land/x/yaml_loader/mod.ts";
 import {Config, LanguageCode, Repository, RepositoryEntry, TemplateData} from './types.ts'
 import {I18nContext} from './context.ts'
 import {pluralize} from './pluralize.ts'
+import {
+  parse,
+} from "https://deno.land/std@0.93.0/encoding/yaml.ts";
 import tableize from './tabelize.ts'
-const yamlLoader = new YamlLoader();
 import getFiles, { exists, fileExt, trimPath, fmtFileSize } from "https://deno.land/x/getfiles/mod.ts";
 
 
@@ -56,7 +58,7 @@ export class I18n {
       const fileContent = Deno.readTextFileSync(directory + '/' + files[propertyName]['name'])
       let data
       if (extension === 'yaml' || extension === 'yml') {
-        data = yamlLoader.parseFile(fileContent)
+        data = parse(fileContent);
       } else if (extension === 'json') {
         data = JSON.parse(fileContent)
       }
